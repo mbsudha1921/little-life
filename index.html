@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff8f5">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/little-life.svg" type="image/svg+xml">
+<meta name="description" content="A gentle personal dashboard for daily life, fitness, learning, journaling and memories.">
+<title>Little Life — Personal Dashboard</title>
+<style>
+:root{--bg:#fff8f5;--card:#fff;--ink:#302a2c;--muted:#817477;--pink:#d96f8d;--pink2:#fbe3ea;--line:#f0dfe3;--green:#e4f3e9;--yellow:#fff1cb;--shadow:0 8px 28px #6a354010}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:24px 18px 14px;max-width:900px;margin:auto} .eyebrow{color:var(--pink);font-weight:750;letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+h1{font-size:30px;line-height:1.1;margin:6px 0 8px;letter-spacing:-.04em}p{margin:0}.sub{color:var(--muted)}
+main{max-width:900px;margin:auto;padding:0 14px 110px}.date{font-size:13px;color:var(--muted);margin-top:12px}
+.nav{display:flex;gap:7px;overflow:auto;padding:10px 0 15px;scrollbar-width:none}.nav button{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 13px;color:var(--muted);font-weight:650}.nav button.active{background:var(--pink);color:white;border-color:var(--pink)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);min-width:0}.wide{grid-column:1/-1}.card h2{font-size:16px;margin:0 0 10px}.big{font-size:27px;font-weight:800;letter-spacing:-.04em}.tiny{font-size:12px;color:var(--muted)}.row{display:flex;align-items:center;gap:8px}.between{display:flex;justify-content:space-between;align-items:center;gap:8px}.stack{display:grid;gap:9px}
+input,textarea,select{font:inherit;color:var(--ink);background:#fffdfc;border:1px solid var(--line);border-radius:11px;padding:11px;width:100%;outline-color:var(--pink)}textarea{min-height:90px;resize:vertical}label{font-size:12px;color:var(--muted);font-weight:650;display:block;margin-bottom:4px}
+button,.btn{cursor:pointer;font:inherit}.primary{background:var(--pink);color:white;border:0;border-radius:11px;padding:11px 14px;font-weight:750}.soft{background:var(--pink2);color:#8b3d57;border:0;border-radius:10px;padding:9px 11px;font-weight:700}.ghost{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px;color:var(--ink)}.danger{color:#a12e44}.task{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f5e9ec}.task:last-child{border-bottom:0}.task input[type=checkbox]{width:18px;height:18px;accent-color:var(--pink);margin-top:3px}.task.done .tasktext{text-decoration:line-through;color:#a79a9d}.tasktext{flex:1;overflow-wrap:anywhere}.empty{color:var(--muted);font-size:13px;padding:8px 0}.pill{display:inline-flex;background:var(--pink2);color:#8b3d57;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:750}.section-title{margin:8px 2px 12px}.section-title h2{margin:0;font-size:20px}.hidden{display:none!important}.foot{position:fixed;bottom:0;left:0;right:0;background:#fffaf8ee;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));text-align:center;font-size:11px;color:var(--muted)}
+.progress{height:8px;background:#f7e8ec;border-radius:99px;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%;background:var(--pink);border-radius:99px;width:0}
+.item-actions{display:flex;gap:6px;flex-wrap:wrap}.item-actions button{font-size:12px}
+@media(min-width:650px){header{padding-top:34px}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.wide{grid-column:span 2}.card{padding:19px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">your little corner of the world 🌷</div>
+  <h1>Little Life</h1>
+  <p class="sub">Small steps. Meaningful days. A life that's yours.</p>
+  <div class="date" id="today"></div>
+</header>
+<main>
+  <nav class="nav" aria-label="Sections">
+    <button class="active" data-tab="home">🏡 Home</button>
+    <button data-tab="daily">☀️ Daily</button>
+    <button data-tab="fitness">💪 Fitness</button>
+    <button data-tab="career">💻 Career</button>
+    <button data-tab="journal">📔 Journal</button>
+    <button data-tab="memories">✨ Books & memories</button>
+    <button data-tab="backup">🛡️ Backup</button>
+  </nav>
+  <section id="home" class="tab">
+    <div class="grid">
+      <article class="card wide">
+        <div class="between"><h2>Today's little promise</h2><span class="pill" id="taskCount">0 tasks</span></div>
+        <p class="sub" id="quote" style="margin:3px 0 12px">You don't need a perfect day. Just one you showed up for.</p>
+        <div class="progress"><span id="taskProgress"></span></div>
+        <p class="tiny" id="taskProgressText" style="margin-top:7px">Your day starts with one small step.</p>
+      </article>
+      <article class="card">
+        <h2>🌱 Habits today</h2><div class="big" id="habitCount">0/0</div><p class="tiny">tiny promises kept</p>
+      </article>
+      <article class="card">
+        <h2>🏋️ Latest weight</h2><div class="big" id="latestWeight">—</div><p class="tiny">kg · only if you choose to track</p>
+      </article>
+      <article class="card wide">
+        <h2>Today's tasks</h2><div id="homeTasks"></div>
+        <button class="soft" onclick="go('daily')">Open my day →</button>
+      </article>
+      <article class="card">
+        <h2>💗 A little reminder</h2><p>Rest is productive too. You are allowed to be a work in progress.</p>
+      </article>
+    </div>
+  </section>
+  <section id="daily" class="tab hidden">
+    <div class="section-title"><h2>Make today yours ☀️</h2><p class="sub">Choose what matters; leave room to breathe.</p></div>
+    <div class="grid">
+      <article class="card wide"><h2>Add a task</h2><form id="taskForm" class="stack"><input id="taskInput" required maxlength="180" placeholder="e.g. Finish test cases, take a walk…"><div class="row"><select id="taskCategory"><option>Personal</option><option>Work</option><option>Health</option><option>Learning</option><option>Family</option></select><button class="primary">Add task +</button></div></form><div id="tasksList"></div></article>
+      <article class="card"><h2>Daily habits</h2><p class="tiny" style="margin-bottom:10px">Tick these for today. You can customise them later.</p><div id="habitsList"></div><form id="habitForm" class="row" style="margin-top:12px"><input id="habitInput" maxlength="80" placeholder="Add a habit…" required><button class="primary">+</button></form></article>
+    </div>
+  </section>
+  <section id="fitness" class="tab hidden">
+    <div class="section-title"><h2>Care for your body 💪</h2><p class="sub">Track trends gently, not perfection.</p></div>
+    <div class="grid">
+      <article class="card"><h2>Log a workout</h2><form id="workoutForm" class="stack"><div><label for="workoutDate">Date</label><input id="workoutDate" type="date" required></div><div><label for="workoutType">Workout</label><input id="workoutType" required placeholder="Back, legs, walk…"></div><div><label for="workoutMinutes">Minutes</label><input id="workoutMinutes" type="number" min="1" max="600" placeholder="45"></div><button class="primary">Save workout</button></form></article>
+      <article class="card"><h2>Log weight (optional)</h2><form id="weightForm" class="stack"><div><label for="weightDate">Date</label><input id="weightDate" type="date" required></div><div><label for="weightValue">Weight in kg</label><input id="weightValue" type="number" min="20" max="300" step=".1" required placeholder="61.8"></div><button class="primary">Save weight</button></form><div id="weightList" style="margin-top:12px"></div></article>
+      <article class="card wide"><h2>Workout history</h2><div id="workoutList"></div></article>
+    </div>
+  </section>
+  <section id="career" class="tab hidden">
+    <div class="section-title"><h2>Build the next version of you 💻</h2><p class="sub">Practice a little. Keep showing up.</p></div>
+    <div class="grid">
+      <article class="card"><h2>Add a learning goal</h2><form id="goalForm" class="stack"><input id="goalInput" required maxlength="180" placeholder="e.g. Practise Playwright locators"><select id="goalCategory"><option>QA / Testing</option><option>JavaScript</option><option>Playwright</option><option>Pega</option><option>Interview prep</option><option>English</option><option>Other</option></select><button class="primary">Add goal</button></form><div id="goalsList" style="margin-top:12px"></div></article>
+      <article class="card"><h2>Learning log</h2><form id="learnForm" class="stack"><input id="learnTopic" required maxlength="120" placeholder="What did you learn?"><textarea id="learnNote" maxlength="1000" placeholder="One thing that makes sense now…"></textarea><button class="primary">Save learning</button></form><div id="learnList" style="margin-top:12px"></div></article>
+    </div>
+  </section>
+  <section id="journal" class="tab hidden">
+    <div class="section-title"><h2>A page for your thoughts 📔</h2><p class="sub">Write honestly. This is for you.</p></div>
+    <div class="grid">
+      <article class="card wide"><h2>Today's journal</h2><form id="journalForm" class="stack"><div><label for="journalDate">Date</label><input id="journalDate" type="date" required></div><div><label for="journalMood">How are you feeling?</label><select id="journalMood"><option>🙂 Okay</option><option>😊 Happy</option><option>🥹 Emotional</option><option>😴 Tired</option><option>😟 Worried</option><option>😌 Peaceful</option><option>🔥 Motivated</option></select></div><div><label for="journalText">What is on your mind?</label><textarea id="journalText" maxlength="5000" required placeholder="What happened today? What did you learn? What do you need?"></textarea></div><button class="primary">Save entry</button></form></article>
+      <article class="card"><h2>Past entries</h2><div id="journalList"></div></article>
+    </div>
+  </section>
+  <section id="memories" class="tab hidden">
+    <div class="section-title"><h2>Keep the good things ✨</h2><p class="sub">Books, moments, lessons and little joys.</p></div>
+    <div class="grid">
+      <article class="card"><h2>Add a memory or book</h2><form id="memoryForm" class="stack"><select id="memoryType"><option>Meaningful moment</option><option>Book</option><option>Lesson learned</option><option>Favourite quote</option><option>Something I'm grateful for</option></select><input id="memoryTitle" required maxlength="140" placeholder="Give it a title"><textarea id="memoryText" maxlength="2000" placeholder="Save the details…"></textarea><button class="primary">Save to my collection</button></form></article>
+      <article class="card wide"><h2>My collection</h2><div id="memoryList"></div></article>
+    </div>
+  </section>
+  <section id="backup" class="tab hidden">
+    <div class="section-title"><h2>Protect your little world 🛡️</h2><p class="sub">Backups are important if you want to keep this for years.</p></div>
+    <div class="grid">
+      <article class="card wide"><h2>Export a backup</h2><p class="sub" style="margin-bottom:12px">Download a JSON file containing your tasks, habits, workouts, weight logs, goals, journal entries and memories. Save it somewhere safe, such as your personal cloud drive or computer.</p><button class="primary" id="exportBtn">Download my backup</button><p id="backupStatus" class="tiny" style="margin-top:10px"></p></article>
+      <article class="card"><h2>Restore a backup</h2><p class="sub" style="margin-bottom:12px">Choose a backup file previously exported from this app. Restoring replaces the data currently on this browser.</p><input id="importFile" type="file" accept=".json,application/json"><button class="soft" id="importBtn" style="margin-top:10px">Restore backup</button></article>
+      <article class="card"><h2>Important to know</h2><ul style="padding-left:18px;margin:0;color:var(--muted)"><li>Version 1 stores data in this browser on this device.</li><li>Clearing browser/site data may erase your records.</li><li>Export backups regularly.</li><li>To sync between devices, we will later add a secure account and cloud database.</li></ul></article>
+    </div>
+  </section>
+</main>
+<div class="foot">Made for your real life, not a perfect one 🌷 · Version 2 · offline-first starter</div>
+<script>
+const KEY='littleLife.v1';
+const todayISO=()=>new Date().toLocaleDateString('en-CA');
+const fresh=()=>({tasks:[],habits:[{id:uid(),name:'Drink enough water'},{id:uid(),name:'Move my body'},{id:uid(),name:'Learn something'},{id:uid(),name:'Take a mindful pause'}],habitChecks:{},workouts:[],weights:[],goals:[],learning:[],journals:[],memories:[]});
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+let data;
+try{data=JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){data=fresh()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));render()}catch(e){alert('Could not save in this browser. Please export a backup and free some space.')}}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateLabel(s){if(!s)return'';return new Date(s+'T12:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}
+function empty(msg='Nothing here yet — add your first one!'){return `<div class="empty">${msg}</div>`}
+function item(title,desc='',date='',actions=''){return `<div class="task"><div class="tasktext"><strong>${esc(title)}</strong>${desc?`<div class="tiny" style="white-space:pre-wrap;margin-top:3px">${esc(desc)}</div>`:''}${date?`<div class="tiny" style="margin-top:3px">${esc(date)}</div>`:''}</div>${actions}</div>`}
+function delBtn(type,id){return `<button class="ghost danger" onclick="removeItem('${type}','${id}')">Delete</button>`}
+function removeItem(type,id){if(!confirm('Delete this item?'))return;data[type]=data[type].filter(x=>x.id!==id);save()}
+function go(tab){document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('hidden',s.id!==tab));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.tab)));
+document.getElementById('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+['workoutDate','weightDate','journalDate'].forEach(id=>document.getElementById(id).value=todayISO());
+document.getElementById('taskForm').addEventListener('submit',e=>{e.preventDefault();data.tasks.unshift({id:uid(),text:taskInput.value.trim(),category:taskCategory.value,date:todayISO(),done:false});taskInput.value='';save()});
+document.getElementById('habitForm').addEventListener('submit',e=>{e.preventDefault();data.habits.push({id:uid(),name:habitInput.value.trim()});habitInput.value='';save()});
+function toggleTask(id,checked){let x=data.tasks.find(t=>t.id===id);if(x)x.done=checked;save()}
+function toggleHabit(id,checked){let day=data.habitChecks[todayISO()]||{};day[id]=checked;data.habitChecks[todayISO()]=day;save()}
+document.getElementById('workoutForm').addEventListener('submit',e=>{e.preventDefault();data.workouts.unshift({id:uid(),date:workoutDate.value,type:workoutType.value.trim(),minutes:workoutMinutes.value});e.target.reset();workoutDate.value=todayISO();save()});
+document.getElementById('weightForm').addEventListener('submit',e=>{e.preventDefault();data.weights.unshift({id:uid(),date:weightDate.value,value:Number(weightValue.value)});e.target.reset();weightDate.value=todayISO();save()});
+document.getElementById('goalForm').addEventListener('submit',e=>{e.preventDefault();data.goals.unshift({id:uid(),text:goalInput.value.trim(),category:goalCategory.value,done:false});goalInput.value='';save()});
+function toggleGoal(id,checked){let x=data.goals.find(t=>t.id===id);if(x)x.done=checked;save()}
+document.getElementById('learnForm').addEventListener('submit',e=>{e.preventDefault();data.learning.unshift({id:uid(),topic:learnTopic.value.trim(),note:learnNote.value.trim(),date:todayISO()});e.target.reset();save()});
+document.getElementById('journalForm').addEventListener('submit',e=>{e.preventDefault();let entry={id:uid(),date:journalDate.value,mood:journalMood.value,text:journalText.value.trim()};data.journals=data.journals.filter(j=>j.date!==entry.date);data.journals.unshift(entry);e.target.reset();journalDate.value=todayISO();save()});
+document.getElementById('memoryForm').addEventListener('submit',e=>{e.preventDefault();data.memories.unshift({id:uid(),type:memoryType.value,title:memoryTitle.value.trim(),text:memoryText.value.trim(),date:todayISO()});e.target.reset();save()});
+document.getElementById('exportBtn').addEventListener('click',()=>{let blob=new Blob([JSON.stringify({app:'Little Life',version:1,exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download='little-life-backup-'+todayISO()+'.json';a.click();URL.revokeObjectURL(url);backupStatus.textContent='Backup downloaded. Save it somewhere safe 💗'});
+document.getElementById('importBtn').addEventListener('click',async()=>{let f=importFile.files[0];if(!f){alert('Choose a backup JSON file first.');return}try{let parsed=JSON.parse(await f.text());let restored=parsed.data||parsed;if(!restored.tasks||!restored.habits||!restored.journals)throw Error('This does not look like a Little Life backup.');if(!confirm('This will replace the data in this browser. Continue?'))return;data=restored;save();backupStatus.textContent='Backup restored successfully.'}catch(e){alert('Could not restore this file. Please choose a valid Little Life backup.')}});
+function render(){
+let todays=data.tasks.filter(t=>t.date===todayISO()),done=todays.filter(t=>t.done).length;
+taskCount.textContent=`${done}/${todays.length} tasks`;taskProgress.style.width=(todays.length?done/todays.length*100:0)+'%';taskProgressText.textContent=todays.length?`${done} done · ${todays.length-done} left. One step at a time.`:'Add one small task to begin.';
+let checks=data.habitChecks[todayISO()]||{};let hc=data.habits.filter(h=>checks[h.id]).length;habitCount.textContent=`${hc}/${data.habits.length}`;
+latestWeight.textContent=data.weights.length?`${data.weights.slice().sort((a,b)=>b.date.localeCompare(a.date))[0].value}`:'—';
+let taskHtml=todays.length?todays.map(t=>`<div class="task ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="tasktext"><strong>${esc(t.text)}</strong><div class="tiny">${esc(t.category)}</div></div></div>`).join(''):empty('No tasks planned. Give yourself a gentle start.');
+homeTasks.innerHTML=taskHtml;
+tasksList.innerHTML=data.tasks.length?data.tasks.map(t=>`<div class="task ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="tasktext"><strong>${esc(t.text)}</strong><div class="tiny">${esc(t.category)} · ${dateLabel(t.date)}</div></div>${delBtn('tasks',t.id)}</div>`).join(''):empty();
+habitsList.innerHTML=data.habits.length?data.habits.map(h=>`<div class="task"><input type="checkbox" ${checks[h.id]?'checked':''} onchange="toggleHabit('${h.id}',this.checked)"><div class="tasktext">${esc(h.name)}</div>${delBtn('habits',h.id)}</div>`).join(''):empty();
+workoutList.innerHTML=data.workouts.length?data.workouts.map(w=>item(`${w.type}${w.minutes?' · '+w.minutes+' min':''}`,'',dateLabel(w.date),delBtn('workouts',w.id))).join(''):empty();
+weightList.innerHTML=data.weights.length?data.weights.slice(0,5).map(w=>item(`${w.value} kg`,'',dateLabel(w.date),delBtn('weights',w.id))).join(''):empty('No weight logs. Optional, always.');
+goalsList.innerHTML=data.goals.length?data.goals.map(g=>`<div class="task ${g.done?'done':''}"><input type="checkbox" ${g.done?'checked':''} onchange="toggleGoal('${g.id}',this.checked)"><div class="tasktext"><strong>${esc(g.text)}</strong><div class="tiny">${esc(g.category)}</div></div>${delBtn('goals',g.id)}</div>`).join(''):empty();
+learnList.innerHTML=data.learning.length?data.learning.map(l=>item(l.topic,l.note,dateLabel(l.date),delBtn('learning',l.id))).join(''):empty();
+journalList.innerHTML=data.journals.length?data.journals.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(j=>item(`${j.mood} · ${dateLabel(j.date)}`,j.text,'',`<button class="ghost" onclick="editJournal('${j.id}')">Edit</button> ${delBtn('journals',j.id)}`)).join(''):empty();
+memoryList.innerHTML=data.memories.length?data.memories.map(m=>item(`${m.title} · ${m.type}`,m.text,dateLabel(m.date),delBtn('memories',m.id))).join(''):empty();
+}
+function editJournal(id){let j=data.journals.find(x=>x.id===id);if(!j)return;go('journal');journalDate.value=j.date;journalMood.value=j.mood;journalText.value=j.text;window.scrollTo({top:0,behavior:'smooth'})}
+render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

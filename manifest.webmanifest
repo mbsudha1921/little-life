@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "Little Life — Personal Dashboard",
+  "short_name": "Little Life",
+  "description": "Your personal, offline-first life dashboard.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff8f5",
+  "theme_color": "#fff8f5",
+  "icons": [
+    {
+      "src": "./icons/little-life.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
